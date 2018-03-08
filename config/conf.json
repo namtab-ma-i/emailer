@@ -1,0 +1,8 @@
+{
+  "port": 8080,
+  "mongourl": "mongodb://localhost:27017/emailer",
+  "emails": "emails",
+  "users": "users",
+  "mailgunApiKey": "",
+  "mailgunDomain": ""
+}

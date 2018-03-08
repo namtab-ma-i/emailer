@@ -1,0 +1,175 @@
+<html>
+<head>
+    <title>Email Easy!</title>
+    <link rel="stylesheet" href="libs/bootstrap.min.css">
+    <link rel="stylesheet" href="css/index.css">
+    <script src="libs/angular.min.js"></script>
+    <script src="libs/socket.io.js"></script>
+    <script src="libs/socket.js"></script>
+    <script src="libs/angular-md5.js"></script>
+    <script src="js/app.js"></script>
+</head>
+<body ng-app="emailer" ng-controller="mainController">
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container">
+        <a class="navbar-brand" href="#">Email Easy!</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active" ng-if="!loggedin">
+                    <a class="nav-link" data-toggle="modal" data-target="#login" href="#">Login</a>
+                </li>
+                <li class="nav-item" ng-if="!loggedin">
+                    <a class="nav-link" data-toggle="modal" data-target="#signup" href="#">Sign up</a>
+                </li>
+                <li class="nav-item" ng-if="loggedin">
+                    <a class="nav-link" href="#">Hi, {{loggedin}}!</a>
+                </li>
+                <li class="nav-item active" ng-if="loggedin">
+                    <a class="nav-link" data-toggle="modal" data-target="#create" href="#">Create</a>
+                </li>
+                <li class="nav-item" ng-if="loggedin">
+                    <a class="nav-link" ng-click="logout()" href="#">Log out</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container main">
+    <div class="row">
+        <div class="col-lg-12 text-center">
+            <div id="accordion" ng-if="emails.length > 0" ng-repeat="email in emails">
+                <div class="card">
+                    <div class="card-header" id="heading{{$index}}">
+                        <h5 class="mb-0">
+                            <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapse{{$index}}" aria-expanded="false" aria-controls="collapse{{$index}}">
+                                {{email.to}}
+                            </button>
+                            <button type="button"
+                                    class="close"
+                                    ng-click="delete($index)"
+                                    aria-label="Close">
+                                <span aria-hidden="true">&times;</span></button>
+                        </h5>
+                    </div>
+
+                    <div id="collapse{{$index}}" class="collapse" aria-labelledby="heading{{$index}}" data-parent="#accordion">
+                        <div class="card-body">
+                            <b>Subject:</b> {{email.subject}} <br>
+                            <b>Message:</b> {{email.text}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div ng-if="loggedin && emails.length == 0">
+                No emails yet...
+            </div>
+            <div ng-if="!loggedin">
+                Please login to start using service...
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="login" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel">
+                        Login
+                    </h4>
+                </div>
+                <form ng-submit="login()" id="loginform">
+                    <div class="modal-body">
+                            <div class="form-group">
+                                <label for="email" class="form-control-label">Email:</label>
+                                <input type="email" class="form-control" ng-model="email" id="email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="password" class="form-control-label">Password:</label>
+                                <input type="password" minlength="1" class="form-control" ng-model="password" id="password" required>
+                            </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-dark" onclick="$('#login').modal('hide');">Login</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="signup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel">
+                        Sign up
+                    </h4>
+                </div>
+                <form ng-submit="register()" id="signupform">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="email" class="form-control-label">Email:</label>
+                            <input type="email" class="form-control" ng-model="email" id="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password" class="form-control-label">Password:</label>
+                            <input type="password" class="form-control" minlength="1" ng-model="password" id="password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password2" class="form-control-label">Repeat password:</label>
+                            <input type="password" class="form-control" minlength="1" ng-model="password2" id="password2" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-dark" onclick="$('#signup').modal('hide');">Sign up</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="create" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel">
+                        Create
+                    </h4>
+                </div>
+                <form ng-submit="create()" id="createform">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="to" class="form-control-label">To:</label>
+                            <input type="email" class="form-control" ng-model="to" id="to" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="subject" class="form-control-label">Subject:</label>
+                            <input type="text" class="form-control" ng-model="subject" id="subject" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="text" class="form-control-label">Message:</label>
+                            <textarea class="form-control" ng-model="text" id="text"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-dark" onclick="$('#create').modal('hide');">Send</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="libs/jquery-3.2.1.slim.min.js"></script>
+<script src="libs/popper.min.js"></script>
+<script src="libs/bootstrap.min.js"></script>
+</body>
+</html>

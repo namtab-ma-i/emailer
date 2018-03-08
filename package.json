@@ -1,0 +1,30 @@
+{
+  "name": "emailer",
+  "version": "0.0.1",
+  "description": "Test MEAN stack app",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/namtab-ma-i/emailer.git"
+  },
+  "author": "Vera Chuiko",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/namtab-ma-i/emailer/issues"
+  },
+  "homepage": "https://github.com/namtab-ma-i/emailer#readme",
+  "dependencies": {
+    "angular-md5": "^0.1.10",
+    "ejs": "^2.5.7",
+    "eslint": "^4.18.2",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "express": "^4.16.2",
+    "mongodb": "^2.2.33",
+    "nodemailer": "^4.6.0",
+    "nodemailer-mailgun-transport": "^1.3.6",
+    "socket.io": "^2.0.4"
+  }
+}
