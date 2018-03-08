@@ -3,6 +3,6 @@
   "mongourl": "mongodb://localhost:27017/emailer",
   "emails": "emails",
   "users": "users",
-  "mailgunApiKey": "",
-  "mailgunDomain": ""
+  "mailgunApiKey": "key-6c82eaa1c49dd7a0eec85c4e9220e18c",
+  "mailgunDomain": "sandbox213c513f04574f6082629de36fa4436d.mailgun.org"
 }
