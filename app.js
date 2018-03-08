@@ -10,10 +10,8 @@ const path = require('path');
 const mailgunTransport = require('nodemailer-mailgun-transport');
 
 const config = require(path.join(__dirname, '/config/conf.json'));
-const Emails = require(path.join(__dirname, '/models/Emails.js'));
-const Users = require(path.join(__dirname, '/models/Users.js'));
+const SocketOnMessage = require(path.join(__dirname, '/controllers/socket.js')).onMessage;
 let collections;
-let activeUser;
 
 app.set('socketio', io);
 app.set('server', server);
@@ -43,57 +41,7 @@ mongo.connect(config.mongourl, (err, db) => {
 });
 
 io.on('connection', (socket) => {
-  socket.on('createemail', (email) => {
-    Emails.send({
-      mongo: collections,
-      user: activeUser,
-      transport,
-      email,
-    }, (err) => {
-      if (err) {
-        console.log(err);
-        socket.emit('err', err.message);
-      } else {
-        socket.emit('emailsent', email);
-      }
-    });
-  });
-  socket.on('deleteemail', (email, index) => {
-    Emails.delete({
-      mongo: collections,
-      user: activeUser,
-      email,
-    }, (err) => {
-      if (err) {
-        console.log(err);
-        socket.emit('err', err.message);
-      } else {
-        socket.emit('emaildeleted', index);
-      }
-    });
-  });
-  socket.on('register', (user) => {
-    Users.register(collections, user, (err) => {
-      if (err) {
-        console.log(err);
-        socket.emit('err', err.message);
-      } else {
-        activeUser = user;
-        socket.emit('login', user, []);
-      }
-    });
-  });
-  socket.on('login', (user) => {
-    Users.login(collections, user, (err, emails) => {
-      if (err) {
-        console.log(err);
-        socket.emit('err', err.message);
-      } else {
-        activeUser = user;
-        socket.emit('login', user, emails);
-      }
-    });
-  });
+  SocketOnMessage(socket, collections, transport);
 });
 
 app.get('/*', (req, res) => {
