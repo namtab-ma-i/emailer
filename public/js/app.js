@@ -3,9 +3,7 @@ const emailer = angular.module('emailer', [
   'angular-md5',
 ]);
 
-emailer.factory('Socket', ['socketFactory', (socketFactory) => {
-  return socketFactory();
-}]);
+emailer.factory('Socket', ['socketFactory', socketFactory => socketFactory()]);
 
 emailer.controller('mainController', [
   '$scope',

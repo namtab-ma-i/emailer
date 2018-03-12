@@ -15,7 +15,7 @@ module.exports = {
       }, (err) => {
         if (err) {
           console.log(err);
-          socket.emit('err', err.message);
+          socket.emit('err', err.message || err);
         } else {
           socket.emit('emailsent', email);
         }
@@ -29,7 +29,7 @@ module.exports = {
       }, (err) => {
         if (err) {
           console.log(err);
-          socket.emit('err', err.message);
+          socket.emit('err', err.message || err);
         } else {
           socket.emit('emaildeleted', index);
         }
@@ -39,7 +39,7 @@ module.exports = {
       Users.register(mongo, user, (err) => {
         if (err) {
           console.log(err);
-          socket.emit('err', err.message);
+          socket.emit('err', err.message || err);
         } else {
           activeUser = user;
           socket.emit('login', user, []);
@@ -50,7 +50,7 @@ module.exports = {
       Users.login(mongo, user, (err, emails) => {
         if (err) {
           console.log(err);
-          socket.emit('err', err.message);
+          socket.emit('err', err.message || err);
         } else {
           activeUser = user;
           socket.emit('login', user, emails);
